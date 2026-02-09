@@ -55,6 +55,7 @@ jobs:
         with:
           repository-url: https://test.pypi.org/legacy/
           packages-dir: dist/
+          verbose: true
 
   # ── 3. Publish to PyPI (production) ────────────────────────
   pypi-publish:
