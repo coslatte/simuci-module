@@ -45,6 +45,7 @@ Repository = "https://github.com/coslatte/simuci"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/simuci"]
+shared-data = { "LICENSE" = "LICENSE" }
 
 [tool.ruff]
 target-version = "py311"
