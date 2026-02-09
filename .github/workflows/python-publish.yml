@@ -42,7 +42,7 @@ jobs:
 
     environment:
       name: testpypi
-      url: https://test.pypi.org/p/testsimuci
+      url: https://test.pypi.org/p/simuci
 
     steps:
       - name: Retrieve release distributions
