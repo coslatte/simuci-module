@@ -8,7 +8,7 @@ version = "0.1.1"
 description = "ICU discrete-event simulation engine — distribution sampling, patient clustering, and statistical validation."
 readme = "README.md"
 license = { file = "LICENSE" }
-requires-python = ">=3.9,<3.12"
+requires-python = ">=3.9, <=3.14"
 authors = [{ name = "SimUCI Team" }]
 keywords = ["icu", "simulation", "discrete-event", "simpy", "healthcare"]
 classifiers = [
@@ -19,6 +19,9 @@ classifiers = [
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Topic :: Scientific/Engineering :: Medical Science Apps.",
     "Typing :: Typed",
 ]
