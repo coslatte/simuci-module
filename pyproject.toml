@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "simuci"
-version = "0.1.1"
+version = "0.1.2"
 description = "ICU discrete-event simulation engine — distribution sampling, patient clustering, and statistical validation."
 readme = "README.md"
 license = { file = "LICENSE" }
