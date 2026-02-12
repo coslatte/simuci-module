@@ -1,6 +1,6 @@
 # simuci
 
-> 🇪🇸 **Español**: [Léeme en español](README.es.md)
+> [Spanish docs](README.es.md)
 
 ICU discrete-event simulation engine — distribution sampling, patient clustering, and statistical validation.
 
