@@ -26,6 +26,7 @@ def _sample_exponential(mean: float) -> float:
     """Draw a single value from an exponential distribution with given *mean*."""
 
     value: float = float(stats.expon.rvs(scale=mean))
+
     logger.debug("exponential sample: mean=%.3f draw=%.3f", mean, value)
 
     return value
@@ -35,6 +36,7 @@ def _sample_weibull(shape: float, scale: float) -> float:
     """Draw a single value from a Weibull-minimum distribution."""
 
     value: float = float(stats.weibull_min.rvs(shape, scale=scale))
+
     logger.debug("weibull sample: shape=%.3f scale=%.3f draw=%.3f", shape, scale, value)
 
     return value
@@ -130,7 +132,7 @@ def _load_centroids(path: str | Path) -> np.ndarray:
     if key in _centroid_cache:
         return _centroid_cache[key]
 
-    from simuci.loaders import CentroidLoader
+    from simuci.io.loaders import CentroidLoader
 
     centroids = CentroidLoader().load(path)
     _centroid_cache[key] = centroids
@@ -199,7 +201,7 @@ def clustering(
 
     centroids = _load_centroids(centroids_path)
 
-    # Defensive alignment: trim to the smaller dimension if mismatch
+    # > trim to the smaller dimension if mismatch
     n_cols = min(centroids.shape[1], features.shape[1])
     distances = np.linalg.norm(centroids[:, :n_cols] - features[:, :n_cols], axis=1)
     cluster: int = int(np.argmin(distances))

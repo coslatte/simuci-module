@@ -8,7 +8,7 @@ import numpy as np
 import pytest
 
 from simuci import clear_centroid_cache, clustering
-from simuci.distributions import (
+from simuci.core.distributions import (
     _load_centroids,
     _sample_exponential,
     _sample_weibull,

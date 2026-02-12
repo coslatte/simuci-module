@@ -3,7 +3,7 @@
 This module centralises domain constants that were previously scattered
 across ``utils.constants.experiment``, ``utils.constants.limits`` and
 ``utils.constants.mappings`` in the application layer.  Only values
-required by the **simulation engine** are kept here — UI-specific strings,
+required by the **simulation engine** are kept here - UI-specific strings,
 paths and theme colours stay in the application.
 """
 
@@ -28,20 +28,17 @@ EXPERIMENT_VARIABLES_FROM_CSV: list[str] = [
 ]
 """Column names consumed from the research dataset (11 features)."""
 
-EXPERIMENT_VARIABLES_LABELS: list[str] = [
-    "Tiempo Pre VAM",
-    "Tiempo VAM",
-    "Tiempo Post VAM",
-    "Estadia UCI",
-    "Estadia Post UCI",
-]
-"""Human-readable labels for the five simulation output variables."""
+EXPERIMENT_VARIABLES_LABELS: dict[str, str] = {
+    "pre_vam": "Tiempo Pre VAM",
+    "vam": "Tiempo VAM",
+    "post_vam": "Tiempo Post VAM",
+    "uci": "Estadia UCI",
+    "post_uci": "Estadia Post UCI",
+}
+"""Keys are machine-readable identifiers, values are display labels."""
 
 N_CLUSTERING_FEATURES: int = 11
-"""Number of centroid features used for nearest-centroid classification.
-
-Matches the 11 input variables from the CSV data used by the UCI app.
-"""
+"""Matches the 11 input variables from the CSV data used by the UCI app."""
 
 # ---------------------------------------------------------------------------
 # Input limits (validation ranges)

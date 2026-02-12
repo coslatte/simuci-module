@@ -7,7 +7,7 @@ a value falls outside the accepted range.  The ranges are defined in
 
 from __future__ import annotations
 
-from simuci._constants import (
+from simuci.internals._constants import (
     AGE_MAX,
     AGE_MIN,
     APACHE_MAX,
@@ -30,12 +30,14 @@ from simuci._constants import (
 
 def _check_range(name: str, value: int, lo: int, hi: int) -> None:
     """Raise ``ValueError`` if *value* is outside [*lo*, *hi*]."""
+
     if not (lo <= value <= hi):
         raise ValueError(f"{name} must be between {lo} and {hi}, got {value}")
 
 
 def _check_key(name: str, value: int, mapping: dict[int, str]) -> None:
     """Raise ``ValueError`` if *value* is not a valid key in *mapping*."""
+
     if value not in mapping:
         valid = sorted(mapping)
         raise ValueError(f"{name} must be one of {valid}, got {value}")
@@ -66,6 +68,7 @@ def validate_experiment_inputs(
     Raises:
         ValueError: If any parameter is outside its valid range / set.
     """
+
     _check_range("age", age, AGE_MIN, AGE_MAX)
     _check_range("apache", apache, APACHE_MIN, APACHE_MAX)
     _check_range("vam_time", vam_time, VAM_T_MIN, VAM_T_MAX)

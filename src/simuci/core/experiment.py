@@ -13,10 +13,10 @@ from pathlib import Path
 import pandas as pd
 import simpy
 
-from simuci import distributions
-from simuci._constants import EXPERIMENT_VARIABLES_LABELS
-from simuci.simulation import Simulation
-from simuci.validators import validate_experiment_inputs
+from simuci.core import distributions
+from simuci.core.simulation import Simulation
+from simuci.internals._constants import EXPERIMENT_VARIABLES_LABELS
+from simuci.validation.validators import validate_experiment_inputs
 
 logger = logging.getLogger(__name__)
 

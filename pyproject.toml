@@ -8,7 +8,7 @@ version = "0.1.5"
 description = "ICU discrete-event simulation engine — distribution sampling, patient clustering, and statistical validation."
 readme = "README.md"
 license = { file = "LICENSE" }
-requires-python = ">=3.12, <=3.14"
+requires-python = ">=3.12"
 authors = [{ name = "SimUCI Team" }]
 keywords = ["icu", "simulation", "discrete-event", "simpy", "healthcare"]
 classifiers = [
@@ -18,8 +18,6 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3 :: Only",
     "Programming Language :: Python :: 3.12",
-    "Programming Language :: Python :: 3.13",
-    "Programming Language :: Python :: 3.14",
     "Topic :: Scientific/Engineering :: Medical Science Apps.",
     "Typing :: Typed",
 ]
@@ -38,6 +36,11 @@ dev = [
     "pytest-cov>=5.0",
     "mypy>=1.10",
     "ruff>=0.4",
+]
+
+# Optional security tooling (never required at runtime).
+security = [
+    "pip-audit>=2.7",
 ]
 
 [project.urls]
@@ -61,4 +64,10 @@ warn_unused_configs = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.2",
+    "pytest-cov>=7.0.0",
+]
 

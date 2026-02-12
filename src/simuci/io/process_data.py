@@ -72,6 +72,7 @@ def get_fecha_ing_uci(path: str | Path) -> Generator:
 
 def get_tiempo_vam(path: str | Path) -> Generator:
     """Yield VAM time (hours) for each patient."""
+
     yield from _iter_column(path, "tiempo_vam")
 
 
@@ -138,6 +139,7 @@ def get_time_simulation(path: str | Path) -> int:
     last_discharge = max(load_file(path, "fecha_egreso"))
     span = last_discharge - first_admission
     hours: int = span.days * 24
+
     logger.debug("Simulation horizon: %s (%d hours)", span, hours)
 
     return hours

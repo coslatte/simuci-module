@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from simuci.schemas import CentroidSchema
+from simuci.validation.schemas import CentroidSchema
 
 
 class TestCentroidSchema:

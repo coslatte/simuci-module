@@ -2,7 +2,8 @@
 
 from __future__ import annotations
 
-from typing import Any, Sequence, TypeAlias, Union
+from collections.abc import Sequence
+from typing import Any
 
 import numpy as np
 
@@ -10,14 +11,14 @@ import numpy as np
 # Core aliases
 # ---------------------------------------------------------------------------
 
-ClusterId: TypeAlias = int
+type ClusterId = int
 """Cluster index returned by :func:`simuci.distribuciones.clustering` (0, 1, or 2)."""
 
-SimulationResult: TypeAlias = dict[str, int]
+type SimulationResult = dict[str, int]
 """Single-replication result mapping variable labels to hour values."""
 
-ArrayLike1D: TypeAlias = Union[Sequence[float], np.ndarray, Any]
+type ArrayLike1D = Sequence[float] | np.ndarray | Any
 """Anything that can act as a 1-D array of floats."""
 
-Metric: TypeAlias = Union[tuple[float, ...], dict[str, Any]]
+type Metric = tuple[float, ...] | dict[str, Any]
 """Return type of individual metric calculations in :class:`SimulationMetrics`."""

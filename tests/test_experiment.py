@@ -6,7 +6,7 @@ import pandas as pd
 import pytest
 
 from simuci import Experiment, multiple_replication, single_run
-from simuci._constants import EXPERIMENT_VARIABLES_LABELS
+from simuci.internals._constants import EXPERIMENT_VARIABLES_LABELS
 
 
 class TestExperiment:
@@ -29,7 +29,7 @@ class TestExperiment:
 
     def test_init_results_variables(self, experiment: Experiment) -> None:
         experiment.init_results_variables()
-        assert set(experiment.result.keys()) == set(EXPERIMENT_VARIABLES_LABELS)
+        assert set(experiment.result.keys()) == set(EXPERIMENT_VARIABLES_LABELS.keys())
         assert all(v == 0 for v in experiment.result.values())
 
     def test_result_starts_empty(self, experiment: Experiment) -> None:
@@ -45,7 +45,7 @@ class TestSingleRun:
 
     def test_result_keys_match_labels(self, experiment: Experiment, centroids_csv: str) -> None:
         result = single_run(experiment, centroids_path=centroids_csv)
-        assert set(result.keys()) == set(EXPERIMENT_VARIABLES_LABELS)
+        assert set(result.keys()) == set(EXPERIMENT_VARIABLES_LABELS.keys())
 
     def test_result_values_are_int(self, experiment: Experiment, centroids_csv: str) -> None:
         result = single_run(experiment, centroids_path=centroids_csv)
@@ -54,19 +54,19 @@ class TestSingleRun:
 
     def test_uci_stay_is_non_negative(self, experiment: Experiment, centroids_csv: str) -> None:
         result = single_run(experiment, centroids_path=centroids_csv)
-        assert result["Estadia UCI"] >= 0
+        assert result["uci"] >= 0
 
     def test_vam_leq_uci(self, experiment: Experiment, centroids_csv: str) -> None:
         """VAM time should never exceed UCI stay."""
         for _ in range(20):
             result = single_run(experiment, centroids_path=centroids_csv)
-            assert result["Tiempo VAM"] <= result["Estadia UCI"]
+            assert result["vam"] <= result["uci"]
 
     def test_time_components_sum(self, experiment: Experiment, centroids_csv: str) -> None:
         """pre_vam + vam + post_vam == uci stay."""
         for _ in range(20):
             r = single_run(experiment, centroids_path=centroids_csv)
-            assert r["Tiempo Pre VAM"] + r["Tiempo VAM"] + r["Tiempo Post VAM"] == r["Estadia UCI"]
+            assert r["pre_vam"] + r["vam"] + r["post_vam"] == r["uci"]
 
 
 class TestMultipleReplication:
@@ -83,7 +83,7 @@ class TestMultipleReplication:
 
     def test_columns_match_labels(self, experiment: Experiment, centroids_csv: str) -> None:
         df = multiple_replication(experiment, n_reps=50, centroids_path=centroids_csv)
-        assert list(df.columns) == EXPERIMENT_VARIABLES_LABELS
+        assert list(df.columns) == list(EXPERIMENT_VARIABLES_LABELS.keys())
 
     def test_as_int_dtype(self, experiment: Experiment, centroids_csv: str) -> None:
         df = multiple_replication(experiment, n_reps=50, as_int=True, centroids_path=centroids_csv)

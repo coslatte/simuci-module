@@ -8,8 +8,8 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from simuci.loaders import CentroidLoader
-from simuci.schemas import CentroidSchema
+from simuci.io.loaders import CentroidLoader
+from simuci.validation.schemas import CentroidSchema
 
 
 class TestCentroidLoader:
@@ -17,17 +17,20 @@ class TestCentroidLoader:
 
     @pytest.fixture()
     def valid_csv(self, tmp_path: Path) -> str:
-        """Write a valid 3×18 centroids CSV and return its path."""
+        """Write a valid 3x18 centroids CSV and return its path."""
+
         rng = np.random.default_rng(0)
         data = rng.random((3, 18))
         df = pd.DataFrame(data, columns=[str(i) for i in range(18)])
         path = tmp_path / "centroids.csv"
-        df.to_csv(path)
+        df.to_csv(path, index=False)
+
         return str(path)
 
     def test_load_valid_csv(self, valid_csv: str) -> None:
         loader = CentroidLoader()
         centroids = loader.load(valid_csv)
+
         assert centroids.shape == (3, 11)
         assert centroids.dtype == np.float64
 
@@ -38,6 +41,7 @@ class TestCentroidLoader:
 
     def test_too_few_columns_raises(self, tmp_path: Path) -> None:
         """CSV with fewer than 11 numeric columns should fail."""
+
         df = pd.DataFrame({"a": [1, 2, 3], "b": [4, 5, 6]})
         path = tmp_path / "small.csv"
         df.to_csv(path, index=False)
@@ -48,6 +52,7 @@ class TestCentroidLoader:
 
     def test_wrong_row_count_warns(self, tmp_path: Path) -> None:
         """CSV with ≠ 3 rows should log a warning but still load."""
+
         rng = np.random.default_rng(0)
         data = rng.random((5, 18))
         df = pd.DataFrame(data, columns=[str(i) for i in range(18)])
@@ -56,6 +61,7 @@ class TestCentroidLoader:
 
         loader = CentroidLoader()
         centroids = loader.load(str(path))
+
         assert centroids.shape == (5, 11)
 
 

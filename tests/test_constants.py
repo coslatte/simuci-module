@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from simuci._constants import (
+from simuci.internals._constants import (
     AGE_MAX,
     AGE_MIN,
     APACHE_MAX,
@@ -34,7 +34,8 @@ class TestExperimentVariables:
         assert len(EXPERIMENT_VARIABLES_LABELS) == 5
 
     def test_labels_are_strings(self) -> None:
-        for label in EXPERIMENT_VARIABLES_LABELS:
+        for key, label in EXPERIMENT_VARIABLES_LABELS.items():
+            assert isinstance(key, str) and len(key) > 0
             assert isinstance(label, str) and len(label) > 0
 
     def test_n_clustering_features(self) -> None:

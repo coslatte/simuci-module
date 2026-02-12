@@ -23,12 +23,12 @@ CSV utilities:
 
 from __future__ import annotations
 
-from simuci.distributions import clear_centroid_cache, clustering
-from simuci.experiment import Experiment, multiple_replication, single_run
-from simuci.loaders import CentroidLoader
-from simuci.simulation import Simulation
-from simuci.stats import Friedman, SimulationMetrics, StatsUtils, Wilcoxon
-from simuci.validators import validate_experiment_inputs, validate_simulation_runs
+from simuci.core.distributions import clear_centroid_cache, clustering
+from simuci.core.experiment import Experiment, multiple_replication, single_run
+from simuci.core.simulation import Simulation
+from simuci.analysis.stats import Friedman, SimulationMetrics, StatsUtils, Wilcoxon
+from simuci.validation.validators import validate_experiment_inputs, validate_simulation_runs
+from simuci.io.loaders import CentroidLoader
 
 __version__ = "0.1.0"
 

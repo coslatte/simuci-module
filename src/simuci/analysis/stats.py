@@ -32,14 +32,14 @@ from scipy.stats import (
 )
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 
-from simuci._constants import EXPERIMENT_VARIABLES_LABELS
-from simuci._types import ArrayLike1D, Metric
+from simuci.internals._constants import EXPERIMENT_VARIABLES_LABELS
+from simuci.internals._types import ArrayLike1D, Metric
 
 try:
     # Available in newer SciPy versions; used to request permutation-based
     # p-values for `anderson_ksamp` when supported.
-    from scipy.stats import PermutationMethod as _PermutationMethod  # type: ignore[attr-defined]
-except ImportError:  # pragma: no cover
+    from scipy.stats import PermutationMethod as _PermutationMethod
+except ImportError:
     _PermutationMethod: Any = None
 
 logger = logging.getLogger(__name__)
@@ -64,6 +64,7 @@ class Wilcoxon:
 
     def test(self) -> None:
         """Run the test and populate :attr:`statistic` and :attr:`p_value`."""
+
         x = np.asarray(self.x)
         y = np.asarray(self.y)
 
@@ -89,6 +90,7 @@ class Friedman:
 
     def test(self) -> None:
         """Run the test and populate :attr:`statistic` and :attr:`p_value`."""
+
         result = friedmanchisquare(*self.samples)
         self.statistic = float(getattr(result, "statistic", 0.0))
         self.p_value = float(getattr(result, "pvalue", 1.0))
@@ -133,6 +135,7 @@ class SimulationMetrics:
             result_as_dict: When ``True`` individual metrics return dicts
                 instead of tuples.
         """
+
         rng = np.random.default_rng(random_state)
 
         confidence_is_out_of_range = not (0.80 <= confidence_level <= 0.95)
@@ -166,12 +169,12 @@ class SimulationMetrics:
         confidence_level: float = 0.95,
     ) -> dict[str, float]:
         """Fraction of patients whose true value falls inside the simulation CI."""
+
         simulation_data = np.asarray(self.simulation_data)
 
         if simulation_data.ndim != 3:
             raise ValueError(
-                "simulation_data must be 3-D "
-                "(n_patients, n_replicates, n_variables)"
+                "simulation_data must be 3-D " "(n_patients, n_replicates, n_variables)"
             )
 
         n_patients, n_replicates, n_variables = simulation_data.shape
@@ -198,20 +201,22 @@ class SimulationMetrics:
         confidence_level: float,
     ) -> tuple[np.ndarray, np.ndarray]:
         """Compute lower and upper confidence bounds from simulation replicates."""
+
         means = np.mean(simulation_data, axis=1)
 
         if n_replicates < 2:
             logger.warning(
                 "Fewer than 2 replicates — CI degenerates to the point estimate"
             )
+
             return means, means
 
         alpha = 1 - confidence_level
         degrees_of_freedom = n_replicates - 1
 
         t_value = t_dist.ppf(1 - alpha / 2, degrees_of_freedom)
-        standard_errors = (
-            np.std(simulation_data, axis=1, ddof=1) / np.sqrt(n_replicates)
+        standard_errors = np.std(simulation_data, axis=1, ddof=1) / np.sqrt(
+            n_replicates
         )
         margin = t_value * standard_errors
 
@@ -223,6 +228,7 @@ class SimulationMetrics:
 
     def _aligned_true_and_simulated(self) -> tuple[np.ndarray, np.ndarray]:
         """Return aligned ``(true_data, simulation_mean)`` for error metrics."""
+
         true_data = np.asarray(self.true_data)
         simulation_mean = np.mean(np.asarray(self.simulation_data), axis=1)
 
@@ -231,12 +237,14 @@ class SimulationMetrics:
 
     def _calculate_rmse(self) -> float:
         """Compute Root Mean Squared Error between true data and simulation means."""
+
         true_data, simulation_mean = self._aligned_true_and_simulated()
         mse = mean_squared_error(true_data, simulation_mean)
         return float(np.sqrt(mse))
 
     def _calculate_mae(self) -> float:
         """Compute Mean Absolute Error between true data and simulation means."""
+
         true_data, simulation_mean = self._aligned_true_and_simulated()
         return float(mean_absolute_error(true_data, simulation_mean))
 
@@ -245,24 +253,29 @@ class SimulationMetrics:
 
         Returns ``nan`` when all true values are zero (division by zero).
         """
+
         true_data, simulation_mean = self._aligned_true_and_simulated()
 
         is_zero = true_data == 0
 
         if np.all(is_zero):
             logger.warning("MAPE undefined — all true values are zero")
+
             return _NAN
 
         with np.errstate(divide="ignore", invalid="ignore"):
             absolute_percentage_errors = np.abs(
                 (true_data - simulation_mean) / true_data.astype(float)
             )
+
             # Mask out zero-valued entries to avoid inf/nan contamination
             masked_errors = np.where(is_zero, np.nan, absolute_percentage_errors)
+
             return float(np.nanmean(masked_errors) * 100)
 
     def _calculate_error_margin(self, as_dict: bool = False) -> Metric:
         """Compute RMSE, MAE and MAPE between true data and simulation means."""
+
         rmse = self._calculate_rmse()
         mae = self._calculate_mae()
         mape = self._calculate_mape()
@@ -283,10 +296,14 @@ class SimulationMetrics:
         """Run a single two-sample KS test, returning ``(statistic, p_value)``."""
         try:
             result = ks_2samp(sample_a, sample_b)
+
             statistic = float(getattr(result, "statistic", _NAN))
             p_value = float(getattr(result, "pvalue", _NAN))
+
             return statistic, p_value
-        except Exception:
+        except Exception as e:
+            print(f"KS test failed: {e}")
+
             return _NAN, _NAN
 
     def _ks_test_flat(self, as_dict: bool) -> Metric:
@@ -295,6 +312,7 @@ class SimulationMetrics:
         simulation_flat = np.asarray(self.simulation_data).flatten()
 
         statistic, p_value = self._ks_single(true_data, simulation_flat)
+
         logger.info("KS — stat=%.4f  p=%.4f", statistic, p_value)
 
         if as_dict:
@@ -312,16 +330,13 @@ class SimulationMetrics:
 
         for v in range(n_variables):
             true_column = (
-                true_data[:, v].ravel()
-                if true_data.ndim > 1
-                else true_data.ravel()
+                true_data[:, v].ravel() if true_data.ndim > 1 else true_data.ravel()
             )
             simulated_column = simulation_data[:, :, v].ravel()
 
             stat, p = self._ks_single(true_column, simulated_column)
             per_variable_results.append((stat, p))
 
-        # Aggregate across all variables
         all_statistics = np.array([s for s, _ in per_variable_results])
         all_p_values = np.array([p for _, p in per_variable_results])
         overall_statistic = float(np.nanmean(all_statistics))
@@ -349,7 +364,7 @@ class SimulationMetrics:
         return (overall_statistic, overall_p_value)
 
     def _ks_test(self, as_dict: bool = False) -> Metric:
-        """Two-sample Kolmogorov–Smirnov test.
+        """Two-sample Kolmogorov-Smirnov test.
 
         Dispatches to :meth:`_ks_test_flat` or :meth:`_ks_test_per_variable`
         depending on the shape of the simulation data.
@@ -373,6 +388,7 @@ class SimulationMetrics:
         Tries ``variant="midrank"`` first, falls back if the scipy version
         does not support it.
         """
+
         kwargs: dict[str, object] = {}
         if _PermutationMethod is not None:
             kwargs["method"] = _PermutationMethod()
@@ -399,6 +415,7 @@ class SimulationMetrics:
 
         For 3-D simulation data the simulation means are used.
         """
+
         true_data = np.asarray(self.true_data)
         simulation_data = np.asarray(self.simulation_data)
 
@@ -414,7 +431,7 @@ class SimulationMetrics:
         *,
         rng: np.random.Generator | None = None,
     ) -> Metric:
-        """Anderson–Darling *k*-sample test comparing true vs. simulated data."""
+        """Anderson-Darling *k*-sample test comparing true vs. simulated data."""
         if rng is None:
             rng = np.random.default_rng()
 
@@ -430,12 +447,12 @@ class SimulationMetrics:
                 simulated_sample,
             )
         except Exception:
-            logger.exception("Anderson–Darling test failed")
+            logger.exception("Anderson-Darling test failed")
             statistic = _NAN
             significance = _NAN
 
         logger.info(
-            "Anderson-Darling — stat=%.4f  p≈%.3f",
+            "Anderson-Darling - stat=%.4f p≈%.3f",
             statistic,
             significance,
         )
@@ -461,6 +478,7 @@ class SimulationMetrics:
         target_shape: tuple[int, ...],
     ) -> np.ndarray:
         """Best-effort reshape / resize of *arr* to *target_shape*."""
+
         if arr.shape == target_shape:
             return arr
         if arr.size == np.prod(target_shape):
@@ -477,6 +495,7 @@ class SimulationMetrics:
         Handles scalar, 1-D, 2-D, and higher-dimensional inputs by
         reshaping, tiling, or resizing as needed.
         """
+
         td = np.asarray(self.true_data)
         target = (n_patients, n_variables)
 
@@ -495,6 +514,7 @@ class SimulationMetrics:
             "true_data has %d dimensions; flattening and resizing",
             td.ndim,
         )
+
         return np.resize(td.ravel(), target)
 
     @staticmethod
@@ -520,9 +540,7 @@ class SimulationMetrics:
             if n_variables == 1:
                 return td.reshape(n_patients, 1)
 
-            logger.warning(
-                "true_data has length n_patients; tiling across variables"
-            )
+            logger.warning("true_data has length n_patients; tiling across variables")
             single_column = td.reshape(n_patients, 1)
             return np.tile(single_column, (1, n_variables))
 
@@ -595,4 +613,5 @@ class StatsUtils:
 
         lower = mean - t_value * standard_error
         upper = mean + t_value * standard_error
+
         return lower, upper

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pytest
 
-from simuci._constants import (
+from simuci.internals._constants import (
     AGE_MAX,
     AGE_MIN,
     APACHE_MAX,
@@ -16,7 +16,7 @@ from simuci._constants import (
     VAM_T_MAX,
     VAM_T_MIN,
 )
-from simuci.validators import validate_experiment_inputs, validate_simulation_runs
+from simuci.validation.validators import validate_experiment_inputs, validate_simulation_runs
 
 
 class TestValidateExperimentInputs:

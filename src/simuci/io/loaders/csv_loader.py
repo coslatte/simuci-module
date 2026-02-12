@@ -8,9 +8,9 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from simuci._constants import N_CLUSTERING_FEATURES
-from simuci.loaders.base import BaseLoader
-from simuci.schemas import CentroidSchema
+from simuci.internals._constants import N_CLUSTERING_FEATURES
+from simuci.io.loaders.base import BaseLoader
+from simuci.validation.schemas import CentroidSchema
 
 logger = logging.getLogger(__name__)
 
@@ -42,6 +42,7 @@ class CentroidLoader(BaseLoader):
             FileNotFoundError: If *path* does not exist.
             ValueError: If the CSV does not match the expected schema.
         """
+
         path = Path(path)
         if not path.exists():
             raise FileNotFoundError(f"Centroid file not found: {path}")

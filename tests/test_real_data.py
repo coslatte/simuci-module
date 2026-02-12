@@ -7,8 +7,8 @@ from pathlib import Path
 import pytest
 
 from simuci import Experiment, single_run
-from simuci.loaders import CentroidLoader
-from simuci.process_data import get_fecha_ingreso, get_time_simulation, load_file
+from simuci.io.loaders import CentroidLoader
+from simuci.io.process_data import get_fecha_ingreso, get_time_simulation, load_file
 
 
 def _skip_if_missing(path: Path) -> None:
@@ -27,8 +27,8 @@ def test_real_clustering_run(real_centroids_csv: Path, valid_params: dict) -> No
     _skip_if_missing(real_centroids_csv)
     exp = Experiment(**valid_params)
     result = single_run(exp, centroids_path=real_centroids_csv)
-    assert "Estadia UCI" in result
-    assert result["Estadia UCI"] >= 0
+    assert "uci" in result
+    assert result["uci"] >= 0
 
 
 def test_real_patient_csv_load(real_patients_csv: Path) -> None:

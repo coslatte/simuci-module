@@ -4,6 +4,6 @@
    :members:
 """
 
-from simuci.loaders.csv_loader import CentroidLoader
+from simuci.io.loaders.csv_loader import CentroidLoader
 
 __all__ = ["CentroidLoader"]

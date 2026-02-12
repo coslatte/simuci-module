@@ -53,12 +53,13 @@ class TestSimulationMetrics:
         true_data: (5 patients, 5 variables)
         simulation_data: (5 patients, 20 reps, 5 variables)
         """
+
         rng = np.random.default_rng(42)
         true = rng.integers(50, 500, size=(5, 5)).astype(float)
         sim = true[:, np.newaxis, :] + rng.normal(0, 20, size=(5, 20, 5))
         return true, sim
 
-    def test_evaluate_populates_all_metrics(self, sample_data) -> None:
+    def test_evaluate_populates_all_metrics(self, sample_data: tuple[np.ndarray, np.ndarray]) -> None:
         true, sim = sample_data
         m = SimulationMetrics(true_data=true, simulation_data=sim)
         m.evaluate(confidence_level=0.95, random_state=42)
@@ -68,7 +69,7 @@ class TestSimulationMetrics:
         assert m.kolmogorov_smirnov_result is not None
         assert m.anderson_darling_result is not None
 
-    def test_coverage_returns_dict(self, sample_data) -> None:
+    def test_coverage_returns_dict(self, sample_data: tuple[np.ndarray, np.ndarray]) -> None:
         true, sim = sample_data
         m = SimulationMetrics(true_data=true, simulation_data=sim)
         m.evaluate(confidence_level=0.95, random_state=42)
@@ -76,7 +77,7 @@ class TestSimulationMetrics:
         assert isinstance(m.coverage_percentage, dict)
         assert len(m.coverage_percentage) == 5
 
-    def test_error_margin_as_tuple(self, sample_data) -> None:
+    def test_error_margin_as_tuple(self, sample_data: tuple[np.ndarray, np.ndarray]) -> None:
         true, sim = sample_data
         m = SimulationMetrics(true_data=true, simulation_data=sim)
         m.evaluate(random_state=42, result_as_dict=False)
@@ -84,7 +85,7 @@ class TestSimulationMetrics:
         assert isinstance(m.error_margin, tuple)
         assert len(m.error_margin) == 3  # rmse, mae, mape
 
-    def test_error_margin_as_dict(self, sample_data) -> None:
+    def test_error_margin_as_dict(self, sample_data: tuple[np.ndarray, np.ndarray]) -> None:
         true, sim = sample_data
         m = SimulationMetrics(true_data=true, simulation_data=sim)
         m.evaluate(random_state=42, result_as_dict=True)
@@ -94,7 +95,7 @@ class TestSimulationMetrics:
         assert "mae" in m.error_margin
         assert "mape" in m.error_margin
 
-    def test_ks_result_as_dict(self, sample_data) -> None:
+    def test_ks_result_as_dict(self, sample_data: tuple[np.ndarray, np.ndarray]) -> None:
         true, sim = sample_data
         m = SimulationMetrics(true_data=true, simulation_data=sim)
         m.evaluate(random_state=42, result_as_dict=True)

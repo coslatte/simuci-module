@@ -1,5 +1,7 @@
 # simuci
 
+> 🇪🇸 **Español**: [Léeme en español](README.es.md)
+
 ICU discrete-event simulation engine — distribution sampling, patient clustering, and statistical validation.
 
 ## Installation
@@ -120,6 +122,11 @@ Skip validation with `validate=False` if you've already validated externally.
 | `StatsUtils` | Static CI helper |
 | `CentroidLoader` | CSV loader with schema validation |
 | `validate_experiment_inputs()` | Parameter range checking |
+
+## Architecture
+
+Project map (core vs. validation, I/O, statistics, tooling):
+[docs/architecture.md](docs/architecture.md)
 
 ## License
 
